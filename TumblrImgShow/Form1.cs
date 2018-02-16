@@ -81,6 +81,7 @@ namespace TumblrImgShow
             PictureBox1.Load(link);
         }
 
+        private void NextPic(object sender, EventArgs e) => this.NextPic();
         private void NextPic()
         {
             this.index++;
@@ -95,6 +96,7 @@ namespace TumblrImgShow
             this.UpdatePicBox();
         }
 
+        private void PrevPic(object sender, EventArgs e) => this.PrevPic();
         private void PrevPic()
         {
             this.index--;
@@ -106,17 +108,6 @@ namespace TumblrImgShow
             }
 
             this.UpdatePicBox();
-        }
-
-        private void NextPic(object sender, EventArgs e)
-        {
-            this.NextPic();
-        }
-
-        private void PrevPic(object sender, EventArgs e)
-        {
-            this.PrevPic();
-        }
-
+        }       
     }
 }
