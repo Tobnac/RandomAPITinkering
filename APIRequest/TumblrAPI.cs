@@ -19,14 +19,14 @@ namespace APIRequest
 
         private string lastTimeStamp = "99999999999999999999999999";
         private string blog = null;
-
+       
         public List<string> Run(string searchTag)
         {            
             var ident = "tagged";
             var done = false;
             var result = "";
             var linkList = new List<string>();
-            var url = this.BuildReqUrl(ident, blog, "tag="+searchTag, "limit=20", "before="+this.lastTimeStamp);
+            var url = this.BuildReqUrl(ident, "tag="+searchTag, "limit=20", "before="+this.lastTimeStamp);
 
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(@url);
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();

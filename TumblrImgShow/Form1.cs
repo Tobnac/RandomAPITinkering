@@ -20,6 +20,7 @@ namespace TumblrImgShow
         private APIRequest.TumblrAPI api;
         private List<PictureBox> picBoxList = new List<PictureBox>();
         private int currentPicBox = 0;
+        private bool gifsOnly = false;
 
         public Form1()
         {
@@ -29,11 +30,12 @@ namespace TumblrImgShow
         private void Form1_Load(object sender, EventArgs e)
         {
             this.api = new APIRequest.TumblrAPI();
+
             this.picBoxList.Add(PictureBox1);
             this.picBoxList.Add(PictureBox2);
         }
 
-        private void SearchBtn_Click(object sender, EventArgs e)
+        private void StartSearch(object sender, EventArgs e)
         {
             // start search, get new links, reset all counters, load first pic
             this.linkList = this.api.Run(SearchInput.Text);
@@ -49,23 +51,23 @@ namespace TumblrImgShow
 
         private void StartDiaShow()
         {
-            return;
-
             void LoadNextImg(object sender, EventArgs a) => this.NextPic();
+            void InfoPrint(object sender, EventArgs a) => Console.WriteLine("now");
 
             var aTimer = new System.Timers.Timer();
             aTimer.Elapsed += new ElapsedEventHandler(LoadNextImg);
+            aTimer.Elapsed += new ElapsedEventHandler(InfoPrint);
             aTimer.Interval = 1500;
             aTimer.Enabled = true;
 
-            while (true) ;
+            //while (true) ;
         }
 
         private void SearchInput_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == 13) // enter key press
             {
-                this.SearchBtn_Click(SearchBtn, EventArgs.Empty);
+                this.StartSearch(SearchBtn, EventArgs.Empty);
             }
         }
 
@@ -84,14 +86,12 @@ namespace TumblrImgShow
         private void NextPic(object sender, EventArgs e) => this.NextPic();
         private void NextPic()
         {
-            this.index++;
-
-            if (index >= this.linkList.Count)
+            do
             {
-                this.index = 0;
-                this.offset += 1;
-                this.linkList = this.api.Run(SearchInput.Text);
+                this.IncreaseIndex();
             }
+            while (this.gifsOnly && !this.linkList[this.index].Contains("gif"));
+
 
             this.UpdatePicBox();
         }
@@ -108,6 +108,29 @@ namespace TumblrImgShow
             }
 
             this.UpdatePicBox();
-        }       
+        }
+
+        private void StartDiashowBtn_Click(object sender, EventArgs e)
+        {
+            this.StartDiaShow();
+        }
+
+        private string GetNextLink()
+        {
+            this.IncreaseIndex();
+            return this.linkList[this.index];
+        }
+
+        private void IncreaseIndex()
+        {
+            this.index++;
+
+            if (index >= this.linkList.Count)
+            {
+                this.index = 0;
+                this.offset += 1;
+                this.linkList = this.api.Run(SearchInput.Text);
+            }
+        }
     }
 }
